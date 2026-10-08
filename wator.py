@@ -28,10 +28,7 @@ class WaTor:
     def get_adjacent(self, cell):
         x = cell.x
         y = cell.y
-        if x > self.x_size or y > self.y_size:
-            raise Exception("cell not in wator")
-        # python indexing should make it automatically toroidal
-        return (self.grid[y+1][x], self.grid[y][x+1], self.grid[y-1][x], self.grid[y][x-1])
+        return (self.grid[(y+1)%self.y_size][x], self.grid[y][(x+1)%self.x_size], self.grid[y-1][x], self.grid[y][x-1])
 
     # also responsible for swapping the coords stored within cells
     def move_cell(self, cell_from, cell_to, cell_replace):
@@ -39,4 +36,21 @@ class WaTor:
         self.grid[cell_from.y][cell_from.x] = cell_replace
         cell_from.x = cell_to.x
         cell_from.y = cell_to.y
+        if isinstance(cell_to, Fish):
+            self.n_fish -= 1
+        if isinstance(cell_replace, Fish):
+            self.n_fish += 1
+        if isinstance(cell_replace, Shark):
+            self.n_shark += 1
 
+    def simulate_row(self, y):
+        for x in range(self.x_size):
+            self.grid[y][x].move()
+
+    def simulate_grid_once(self):
+        for y in range(self.y_size):
+            self.simulate_row(y)
+
+    def simulate_n_steps(self, n):
+        for _ in range (n):
+            self.simulate_grid_once()
