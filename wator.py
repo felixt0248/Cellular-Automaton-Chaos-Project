@@ -10,6 +10,9 @@ class WaTor:
         self.n_shark = n_shark
 
         self.grid = self.grid_init() # NOTE: to reference a grid coordinate use self.grid[y][x]
+        
+        if n_fish + n_shark > x_size * y_size:
+            raise Exception("too many animals")
         self.place_animals_randomly(Fish, n_fish, r_fish)
         self.place_animals_randomly(Shark, n_shark, r_shark)
 
@@ -17,7 +20,6 @@ class WaTor:
         grid = [[Water(self, x, y) for x in range(self.x_size)] for y in range(self.y_size)]
         return grid
 
-    # TODO: can run forever need to fix
     def place_animals_randomly(self, animal, n_animals, r):
         while n_animals > 0:
             x = random.randint(0, self.x_size - 1)
