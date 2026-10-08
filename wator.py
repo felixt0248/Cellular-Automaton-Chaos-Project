@@ -17,6 +17,7 @@ class WaTor:
         grid = [[Water(self, x, y) for x in range(self.x_size)] for y in range(self.y_size)]
         return grid
 
+    # TODO: can run forever need to fix
     def place_animals_randomly(self, animal, n_animals, r):
         while n_animals > 0:
             x = random.randint(0, self.x_size - 1)
@@ -38,6 +39,17 @@ class WaTor:
         cell_from.y = cell_to.y
         if isinstance(cell_to, Fish):
             self.n_fish -= 1
+        if isinstance(cell_replace, Fish):
+            self.n_fish += 1
+        if isinstance(cell_replace, Shark):
+            self.n_shark += 1
+
+    def replace_cell(self, cell_from, cell_replace):
+        self.grid[cell_from.y][cell_from.x] = cell_replace
+        if isinstance(cell_from, Fish):
+            self.n_fish -= 1
+        if isinstance(cell_from, Shark):
+            self.n_shark -= 1
         if isinstance(cell_replace, Fish):
             self.n_fish += 1
         if isinstance(cell_replace, Shark):
