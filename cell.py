@@ -31,4 +31,12 @@ class Fish(Animal):
 
 class Shark(Animal):
     def move(self):
-        pass
+        adj = self.get_adjacent()
+        adj_fish = list(filter(lambda c: isinstance(c, Fish), adj))
+        adj_water = list(filter(lambda c: isinstance(c, Water), adj))
+        if len(adj_fish) != 0:
+            move_to = random.choice(adj_fish)
+            self.wator.move_cell(self, move_to, Water(self.wator, self.x, self.y))
+        elif len(adj_fish) == 0 and len(adj_water) != 0:
+            move_to = random.choice(adj_water)
+            self.wator.move_cell(self, move_to, Water(self.wator, self.x, self.y))
