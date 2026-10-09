@@ -3,18 +3,20 @@ import random
 from cell import Water, Fish, Shark
 
 class WaTor:
-    def __init__(self, x_size, y_size, n_fish, n_shark, r_fish, r_shark):
-        self.x_size = x_size
-        self.y_size = y_size
-        self.n_fish = n_fish
-        self.n_shark = n_shark
+    def __init__(self, starting_params):
+        self.x_size = starting_params["x_size"]
+        self.y_size = starting_params["y_size"]
+        self.n_fish = starting_params["n_fish"]
+        self.n_shark = starting_params["n_shark"]
+        self.r_fish = starting_params["r_fish"]
+        self.r_shark = starting_params["r_shark"]
 
         self.grid = self.grid_init() # NOTE: to reference a grid coordinate use self.grid[y][x]
         
-        if n_fish + n_shark > x_size * y_size:
+        if self.n_fish + self.n_shark > self.x_size * self.y_size:
             raise Exception("too many animals")
-        self.place_animals_randomly(Fish, n_fish, r_fish)
-        self.place_animals_randomly(Shark, n_shark, r_shark)
+        self.place_animals_randomly(Fish, self.n_fish, self.r_fish)
+        self.place_animals_randomly(Shark, self.n_shark, self.r_shark)
 
     def grid_init(self):
         grid = [[Water(self, x, y) for x in range(self.x_size)] for y in range(self.y_size)]

@@ -1,0 +1,15 @@
+starting_params:
+  n_fish: 10
+  n_shark: 10
+  r_fish:
+    initial_age: 0
+    time_to_reproduce: 15
+  r_shark:
+    energy_gain: 0.15
+    energy_loss: 0.01
+    energy_to_reproduce: 0.98
+    initial_energy: 1
+    max_energy: 1
+  x_size: 200
+  y_size: 200
+simulation_steps: 100
