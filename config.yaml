@@ -12,4 +12,7 @@ starting_params:
     max_energy: 1
   x_size: 200
   y_size: 200
-simulation_steps: 100
+simulation_params:
+  simulation_steps: 1000
+  terminate_trivial: True
+  verbose: True

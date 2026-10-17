@@ -66,7 +66,17 @@ class WaTor:
     def simulate_grid_once(self):
         for y in range(self.y_size):
             self.simulate_row(y)
+        return (self.n_fish, self.n_shark)
 
-    def simulate_n_steps(self, n):
-        for _ in range (n):
-            self.simulate_grid_once()
+    def simulate_n_steps(self, sim_params):
+        n = sim_params["simulation_steps"]
+        verbose = sim_params["verbose"]
+        terminate_trivial = sim_params["terminate_trivial"]
+        overview = [(self.n_fish, self.n_shark)]
+        for i in range (n):
+            overview.append(self.simulate_grid_once())
+            if verbose and i % 100 == 0:
+                print(f"{i} steps complete")
+            if terminate_trivial and (self.n_fish + self.n_shark == 0 or self.n_fish == self.x_size * self.y_size):
+                return overview
+        return overview
