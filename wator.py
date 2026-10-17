@@ -77,6 +77,6 @@ class WaTor:
             overview.append(self.simulate_grid_once())
             if verbose and i % 100 == 0:
                 print(f"{i} steps complete")
-            if terminate_trivial and (self.n_fish + self.n_shark == 0 or self.n_fish == self.x_size * self.y_size):
+            if terminate_trivial and (self.n_fish == 0 or self.n_shark == 0):
                 return overview
         return overview
