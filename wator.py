@@ -71,11 +71,12 @@ class WaTor:
     def simulate_n_steps(self, sim_params):
         n = sim_params["simulation_steps"]
         verbose = sim_params["verbose"]
+        verbosity_interval = sim_params["verbosity_interval"]
         terminate_trivial = sim_params["terminate_trivial"]
         overview = [(self.n_fish, self.n_shark)]
         for i in range (n):
             overview.append(self.simulate_grid_once())
-            if verbose and i % 100 == 0:
+            if verbose and i % verbosity_interval == 0:
                 print(f"{i} steps complete")
             if terminate_trivial and (self.n_fish == 0 or self.n_shark == 0):
                 return overview

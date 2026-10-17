@@ -16,3 +16,4 @@ simulation_params:
   simulation_steps: 1000
   terminate_trivial: True
   verbose: True
+  verbosity_interval: 100
