@@ -1,6 +1,6 @@
 starting_params:
-  n_fish: 10
-  n_shark: 10
+  n_fish: 1000
+  n_shark: 1000
   r_fish:
     initial_age: 0
     time_to_reproduce: 15
@@ -14,6 +14,10 @@ starting_params:
   y_size: 200
 simulation_params:
   simulation_steps: 1000
+  n_worlds: 4
   terminate_trivial: True
   verbose: True
   verbosity_interval: 100
+overview_settings:
+  show_plots: True
+  print_results: True

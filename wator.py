@@ -1,4 +1,5 @@
 import random
+import threading
 
 from cell import Water, Fish, Shark
 
@@ -81,3 +82,9 @@ class WaTor:
             if terminate_trivial and (self.n_fish == 0 or self.n_shark == 0):
                 return overview
         return overview
+
+    def simulate_n_worlds(self, sim_params):
+        n = sim_params["n_worlds"]
+        threads = [threading.Thread(target=self.simulate_n_steps, args=(sim_params, )) for _ in range(n)]
+        [t.start() for t in threads]
+        [t.join() for t in threads]
