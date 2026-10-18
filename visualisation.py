@@ -19,5 +19,11 @@ def plot_overview(overview):
     ax.set_xlabel("Time")
     ax.set_ylabel("Population")
     ax.legend()
-
     plt.show()
+
+    fig, ax = plt.subplots()
+        ax.plot(fish, shark)
+        ax.set_xlabel("Fish")
+        ax.set_ylabel("Sharks")
+        ax.legend()
+        plt.show()
