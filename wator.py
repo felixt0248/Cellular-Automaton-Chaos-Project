@@ -1,5 +1,5 @@
 import random
-import threading
+from concurrent import futures
 
 from cell import Water, Fish, Shark
 
@@ -85,6 +85,6 @@ class WaTor:
 
     def simulate_n_worlds(self, sim_params):
         n = sim_params["n_worlds"]
-        threads = [threading.Thread(target=self.simulate_n_steps, args=(sim_params, )) for _ in range(n)]
-        [t.start() for t in threads]
-        [t.join() for t in threads]
+        with futures.ProcessPoolExecutor() as executor:
+            fs = [executor.submit(self.simulate_n_steps, sim_params) for _ in range(n)]
+            return [f.result() for f in futures.as_completed(fs)]
