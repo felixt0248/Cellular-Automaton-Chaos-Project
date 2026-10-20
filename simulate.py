@@ -8,9 +8,8 @@ def main():
         config = yaml.safe_load(f)
 
     w = WaTor(config["starting_params"])
-    w.simulate_n_worlds(config["simulation_params"])
-    #overview = Overview(w.simulate_n_steps(config["simulation_params"]))
-    #overview.show(config["overview_settings"])
+    overviews = [Overview(overview) for overview in w.simulate_n_worlds(config["simulation_params"])]
+    [overview.show(config["overview_settings"]) for overview in overviews]
 
 if __name__ == "__main__":
     main()
