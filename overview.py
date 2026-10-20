@@ -1,14 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
-plt.rcParams.update({
-    "text.usetex": True,
-    "font.family": "serif",
-    "font.serif": ["Computer Modern Roman"],
-    "font.size": 25,
-    "mathtext.fontset": "cm",
-})
-
 class Overview:
     def __init__(self, data):
         self.fish, self.shark = map(list, zip(*data))
@@ -24,16 +16,17 @@ class Overview:
         pass
 
     def plot(self):
-        fig, ax = plt.subplots()
-        ax.plot(self.t, self.fish, label="Fish")
-        ax.plot(self.t, self.shark, label="Sharks")
-        ax.set_xlabel("Time")
-        ax.set_ylabel("Population")
-        ax.legend()
-        plt.show()
+        fig, (ax1, ax2) = plt.subplots(1, 2)
+        ax1.plot(self.t, self.fish, label="Fish")
+        ax1.plot(self.t, self.shark, label="Sharks")
+        ax1.set_xlabel("Time")
+        ax1.set_ylabel("Population")
+        ax1.set_title("Time Evolution of Populations")
+        ax1.legend()
 
-        fig, ax = plt.subplots()
-        ax.plot(self.fish, self.shark)
-        ax.set_xlabel("Fish")
-        ax.set_ylabel("Sharks")
+        ax2.plot(self.fish, self.shark)
+        ax2.set_xlabel("Fish")
+        ax2.set_ylabel("Sharks")
+        ax2.set_title("Phase Diagram")
+
         plt.show()
