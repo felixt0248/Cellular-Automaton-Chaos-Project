@@ -12,6 +12,14 @@ class Cell:
     def get_adjacent(self):
         return self.wator.get_adjacent(self)
 
+    def get_colour(self):
+        if isinstance(self, Water):
+            return 0
+        if isinstance(self, Fish):
+            return 1
+        if isinstance(self, Shark):
+            return 2
+
 class Water(Cell):
     def move(self):
         pass

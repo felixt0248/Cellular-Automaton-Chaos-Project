@@ -11,6 +11,7 @@ class WaTor:
         self.n_shark = starting_params["n_shark"]
         self.r_fish = starting_params["r_fish"]
         self.r_shark = starting_params["r_shark"]
+        self.name = f"x{self.x_size}y{self.y_size}f{self.n_fish}s{self.n_shark}"
 
         self.grid = self.grid_init() # NOTE: to reference a grid coordinate use self.grid[y][x]
         
@@ -60,28 +61,37 @@ class WaTor:
         if isinstance(cell_replace, Shark):
             self.n_shark += 1
 
+    def colour_grid(self, gen_animation):
+        if gen_animation:
+            return [[c.get_colour() for c in i] for i in self.grid]
+
     def simulate_row(self, y):
         for x in range(self.x_size):
             self.grid[y][x].move()
 
-    def simulate_grid_once(self):
+    def simulate_grid_once(self, gen_animation):
         for y in range(self.y_size):
             self.simulate_row(y)
-        return (self.n_fish, self.n_shark)
+        return (self.n_fish, self.n_shark, self.colour_grid(gen_animation))
 
     def simulate_n_steps(self, sim_params):
         n = sim_params["simulation_steps"]
         verbose = sim_params["verbose"]
         verbosity_interval = sim_params["verbosity_interval"]
         terminate_trivial = sim_params["terminate_trivial"]
-        overview = [(self.n_fish, self.n_shark)]
+        gen_animation = sim_params["gen_animation"]
+        overview = [(self.n_fish, self.n_shark, self.colour_grid(gen_animation))]
         for i in range (n):
-            overview.append(self.simulate_grid_once())
-            if verbose and i % verbosity_interval == 0:
+            overview.append(self.simulate_grid_once(gen_animation))
+            if verbose and i % verbosity_interval == 0 and i != 0:
                 print(f"{i} steps complete")
             if terminate_trivial and (self.n_fish == 0 or self.n_shark == 0):
+                if verbose:
+                    print("simulation done: extinction")
                 return overview
-        return overview
+        if verbose:
+            print("simulation done")
+        return self.name, overview
 
     def simulate_n_worlds(self, sim_params):
         n = sim_params["n_worlds"]

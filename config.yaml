@@ -13,11 +13,12 @@ starting_params:
   x_size: 200
   y_size: 200
 simulation_params:
-  simulation_steps: 1000
-  n_worlds: 4
+  simulation_steps: 2000
+  n_worlds: 1
   terminate_trivial: True
+  gen_animation: True
   verbose: True
-  verbosity_interval: 100
+  verbosity_interval: 1000
 overview_settings:
-  show_plots: True
+  gen_plots: True
   print_results: True

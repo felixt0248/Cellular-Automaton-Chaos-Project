@@ -1,22 +1,48 @@
+import os
 import numpy as np
 from matplotlib import pyplot as plt
+from matplotlib import animation
 
 class Overview:
     GRAPH_CUTOFF_FRACTION = 0.001
+    PLOT_PATH = "data/plots"
+    ANIM_PATH = "data/animations"
 
-    def __init__(self, data):
-        self.fish, self.shark = map(list, zip(*data))
+    def __init__(self, name, data):
+        self.ensure_paths()
+        self.fish, self.shark, self.colour_matrices = map(list, zip(*data))
         self.t = np.arange(0, len(self.fish), 1)
+        self.name = name
 
-    def show(self, settings):
-        if settings["show_plots"]:
+    def gen(self, settings):
+        self.uniquify_name()
+        if any(self.colour_matrices):
+            self.animate()
+        if settings["gen_plots"]:
             self.plot()
         if settings["print_results"]:
             self.print_results()
 
+    def uniquify_name(self):
+        if "u" not in self.name:
+            self.name += f"n{len(self.fish)}u{self.unique_suffix()}"
+
+    def unique_suffix(self):
+        existing = list(set([f.split(".")[0] for f in os.listdir(self.PLOT_PATH)]) | set([f.split(".")[0] for f in os.listdir(self.ANIM_PATH)]))
+        existing_suffixes = [int(f.split("u")[1]) for f in existing]
+        if len(existing_suffixes) == 0:
+            suffix = 1
+        else:
+            suffix = 1 + max(existing_suffixes)
+        return str(suffix).zfill(3)
+
+    def ensure_paths(self):
+        os.makedirs(self.PLOT_PATH, exist_ok=True)
+        os.makedirs(self.ANIM_PATH, exist_ok=True)
+
     def print_results(self):
-        print("fish standard deviation: ", np.std(self.fish))
-        print("shark standard deviation: ", np.std(self.shark))
+        print("fish std: \t", np.std(self.fish))
+        print("shark std:\t", np.std(self.shark))
 
     def get_power_spectrum(self):
         fish_deviation = self.fish - np.mean(self.fish)
@@ -37,6 +63,12 @@ class Overview:
 
         plot_cutoff = max(fish_cutoff, shark_cutoff)
         return (freqs[0:plot_cutoff], fish_power[0:plot_cutoff], shark_power[0:plot_cutoff])
+
+    def animate(self):
+        fig, ax = plt.subplots()
+        artists = [[ax.matshow(M)] for M in self.colour_matrices]
+        anim = animation.ArtistAnimation(fig=fig, artists=artists, interval=10)
+        anim.save(f"{self.ANIM_PATH}/{self.name}.mp4", writer="ffmpeg", fps=30)
 
     def plot(self):
         fig, (ax1, ax2, ax3) = plt.subplots(1, 3)
@@ -59,5 +91,5 @@ class Overview:
         ax3.set_ylabel("Power")
         ax3.set_title("Power Spectrum")
 
-        plt.tight_layout(w_pad=-2)
-        plt.show()
+        fig.tight_layout()
+        fig.savefig(f"{self.PLOT_PATH}/{self.name}.png")
