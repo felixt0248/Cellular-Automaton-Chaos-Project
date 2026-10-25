@@ -1,18 +1,25 @@
 import os
 import numpy as np
+from concurrent import futures
 from matplotlib import pyplot as plt
 from matplotlib import animation
 
 class Overview:
     GRAPH_CUTOFF_FRACTION = 0.001
-    PLOT_PATH = "data/plots"
-    ANIM_PATH = "data/animations"
+    PLOT_PATH = "data/tempplots"
+    ANIM_PATH = "data/tempanimations"
 
     def __init__(self, name, data):
         self.ensure_paths()
         self.fish, self.shark, self.colour_matrices = map(list, zip(*data))
         self.t = np.arange(0, len(self.fish), 1)
         self.name = name
+
+    @staticmethod
+    def gen_parallel(overviews, settings):
+        with futures.ProcessPoolExecutor() as executor:
+            fs = [executor.submit(Overview.gen, overview, settings) for overview in overviews]
+            [f.result() for f in futures.as_completed(fs)]
 
     def gen(self, settings):
         self.uniquify_name()
