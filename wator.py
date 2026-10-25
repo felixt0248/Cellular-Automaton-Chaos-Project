@@ -88,7 +88,7 @@ class WaTor:
             if terminate_trivial and (self.n_fish == 0 or self.n_shark == 0):
                 if verbose:
                     print("simulation done: extinction")
-                return overview
+                return self.name, overview
         if verbose:
             print("simulation done")
         return self.name, overview
