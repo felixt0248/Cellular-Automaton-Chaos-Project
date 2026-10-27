@@ -56,10 +56,16 @@ class Overview:
 
         # ugly code to make the power spectrum plot look neater
         fish_low_points = np.where(fish_power < self.GRAPH_CUTOFF_FRACTION * max_fish)[0]
-        fish_cutoff = fish_low_points[np.where(fish_low_points > np.argmax(fish_power))[0][0]]
+        try:
+            fish_cutoff = fish_low_points[np.where(fish_low_points > np.argmax(fish_power))[0][0]]
+        except:
+            fish_cutoff = -1
 
         shark_low_points = np.where(shark_power < self.GRAPH_CUTOFF_FRACTION * max_shark)[0]
-        shark_cutoff = shark_low_points[np.where(shark_low_points > np.argmax(shark_power))[0][0]]
+        try:
+            shark_cutoff = shark_low_points[np.where(shark_low_points > np.argmax(shark_power))[0][0]]
+        except:
+            shark_cutoff = -1
 
         plot_cutoff = max(fish_cutoff, shark_cutoff)
         return (freqs[0:plot_cutoff], fish_power[0:plot_cutoff], shark_power[0:plot_cutoff])
