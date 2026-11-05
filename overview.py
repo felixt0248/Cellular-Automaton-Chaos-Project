@@ -16,6 +16,7 @@ class Overview:
 
     def gen(self, settings):
         self.uniquify_name()
+        self.get_power_spectrum()
         if any(self.colour_matrices):
             self.animate()
         if settings["gen_plots"]:
@@ -41,8 +42,10 @@ class Overview:
         os.makedirs(self.ANIM_PATH, exist_ok=True)
 
     def print_results(self):
-        print("fish std: \t", np.std(self.fish))
-        print("shark std:\t", np.std(self.shark))
+        print("fish std: ", np.std(self.fish))
+        print("shark std:", np.std(self.shark))
+        print("fish peak frequency: ", self.freqs[np.argmax(self.fish_power)])
+        print("shark peak frequency:", self.freqs[np.argmax(self.shark_power)])
 
     def get_power_spectrum(self):
         fish_deviation = self.fish - np.mean(self.fish)
@@ -68,7 +71,9 @@ class Overview:
             shark_cutoff = -1
 
         plot_cutoff = max(fish_cutoff, shark_cutoff)
-        return (freqs[0:plot_cutoff], fish_power[0:plot_cutoff], shark_power[0:plot_cutoff])
+        self.freqs = freqs[0:plot_cutoff]
+        self.fish_power = fish_power[0:plot_cutoff]
+        self.shark_power = shark_power[0:plot_cutoff]
 
     def animate(self):
         fig, ax = plt.subplots()
@@ -90,9 +95,8 @@ class Overview:
         ax2.set_ylabel("Sharks")
         ax2.set_title("Phase Diagram")
 
-        freqs, fish, shark = self.get_power_spectrum()
-        ax3.plot(freqs, fish)
-        ax3.plot(freqs, shark)
+        ax3.plot(self.freqs, self.fish_power)
+        ax3.plot(self.freqs, self.shark_power)
         ax3.set_xlabel("Frequency")
         ax3.set_ylabel("Power")
         ax3.set_title("Power Spectrum")
