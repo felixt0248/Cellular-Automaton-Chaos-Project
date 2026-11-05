@@ -31,6 +31,14 @@ python3 simulate.py
 
 The simulation parameters can be adjusted in `config.yaml`.
 
+## Sample Output
+
+Here is an example simulation on a 200x200 grid starting with 1000 fish and 1000 sharks over 500 time steps.
+
+https://github.com/user-attachments/assets/12b16681-0cee-43f2-a6c4-ef46b4e61dc4
+
+<img width="640" height="480" alt="Image" src="https://github.com/user-attachments/assets/e8d1068e-2c03-47f9-b52b-2aa6204687ca" />
+
 ## Notes
 
 I think we should change the plural of shark to shark as opposed to sharks.
