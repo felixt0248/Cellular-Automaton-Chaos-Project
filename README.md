@@ -19,6 +19,11 @@ We aim to use this simple simulation idea to investigate how the world size impa
 
 ## Usage
 
+Make sure all requirements are installed with
+```bash
+pip install -r requirements.txt
+```
+
 To run the simulation run
 ```bash
 python3 simulate.py
