@@ -11,7 +11,7 @@ class WaTor:
         self.n_shark = starting_params["n_shark"]
         self.r_fish = starting_params["r_fish"]
         self.r_shark = starting_params["r_shark"]
-        self.name = f"x{self.x_size}y{self.y_size}f{self.n_fish}s{self.n_shark}"
+        self.name = f"X{self.x_size}Y{self.y_size}F{self.n_fish}S{self.n_shark}"
 
         self.grid = self.grid_init() # NOTE: to reference a grid coordinate use self.grid[y][x]
         

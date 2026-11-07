@@ -22,15 +22,16 @@ class Overview:
         if settings["gen_plots"]:
             self.plot()
         if settings["print_results"]:
-            self.print_results()
+            results = self.get_results()
+        return results
 
     def uniquify_name(self):
-        if "u" not in self.name:
-            self.name += f"n{len(self.fish)}u{self.unique_suffix()}"
+        if "U" not in self.name:
+            self.name += f"N{len(self.fish)}U{self.unique_suffix()}"
 
     def unique_suffix(self):
         existing = list(set([f.split(".")[0] for f in os.listdir(self.PLOT_PATH)]) | set([f.split(".")[0] for f in os.listdir(self.ANIM_PATH)]))
-        existing_suffixes = [int(f.split("u")[1]) for f in existing]
+        existing_suffixes = [int(f.split("U")[1]) for f in existing]
         if len(existing_suffixes) == 0:
             suffix = 1
         else:
@@ -41,11 +42,18 @@ class Overview:
         os.makedirs(self.PLOT_PATH, exist_ok=True)
         os.makedirs(self.ANIM_PATH, exist_ok=True)
 
-    def print_results(self):
-        print("fish std: ", np.std(self.fish))
-        print("shark std:", np.std(self.shark))
-        print("fish peak frequency: ", self.freqs[np.argmax(self.fish_power)])
-        print("shark peak frequency:", self.freqs[np.argmax(self.shark_power)])
+    def get_results(self):
+        extinction_time = len(self.fish) if (self.fish[-1] == 0 or self.shark[-1] == 0) else None
+        return {
+            "fish_std": np.std(self.fish),
+            "shark_std": np.std(self.shark),
+            "fish_peak_frequency": self.freqs[np.argmax(self.fish_power)],
+            "fish_peak_amplitude": max(self.fish_power),
+            "shark_peak_frequency": self.freqs[np.argmax(self.shark_power)],
+            "shark_peak_amplitude": max(self.shark_power),
+            "extinction_time": extinction_time
+        }
+         
 
     def get_power_spectrum(self):
         fish_deviation = self.fish - np.mean(self.fish)
@@ -82,24 +90,45 @@ class Overview:
         anim.save(f"{self.ANIM_PATH}/{self.name}.mp4", writer="ffmpeg", fps=30)
 
     def plot(self):
-        fig, (ax1, ax2, ax3) = plt.subplots(1, 3)
-        ax1.plot(self.t, self.fish, label="Fish")
-        ax1.plot(self.t, self.shark, label="Sharks")
-        ax1.set_xlabel("Time")
-        ax1.set_ylabel("Population")
-        ax1.set_title("Time Evolution of Populations")
-        ax1.legend()
+        # make this neater later
+        x = self.name.split("X")[1].split("Y")[0]
+        y = self.name.split("Y")[1].split("F")[0]
 
-        ax2.plot(self.fish, self.shark)
-        ax2.set_xlabel("Fish")
-        ax2.set_ylabel("Sharks")
-        ax2.set_title("Phase Diagram")
+        fig, ax = plt.subplots()
+        ax.plot(self.t, self.fish, label="Fish")
+        ax.plot(self.t, self.shark, label="Sharks")
+        ax.set_xlabel("Time")
+        ax.set_ylabel("Population")
+        ax.set_title(f"Time Evolution of Populations {x}x{y}")
+        ax.legend()
+        fig.savefig(f"{self.PLOT_PATH}/time_{self.name}.png")
+        ax.cla()
 
-        ax3.plot(self.freqs, self.fish_power)
-        ax3.plot(self.freqs, self.shark_power)
-        ax3.set_xlabel("Frequency")
-        ax3.set_ylabel("Power")
-        ax3.set_title("Power Spectrum")
+        ax.plot(self.fish, self.shark)
+        ax.set_xlabel("Fish")
+        ax.set_ylabel("Sharks")
+        ax.set_title(f"Phase Diagram {x}x{y}")
+        fig.savefig(f"{self.PLOT_PATH}/phase_{self.name}.png")
+        ax.cla()
 
-        fig.tight_layout()
-        fig.savefig(f"{self.PLOT_PATH}/{self.name}.png")
+        ax.plot(self.freqs, self.fish_power)
+        ax.plot(self.freqs, self.shark_power)
+        ax.set_xlabel("Frequency")
+        ax.set_ylabel("Power")
+        ax.set_title(f"Power Spectrum {x}x{y}")
+        fig.savefig(f"{self.PLOT_PATH}/freq_{self.name}.png")
+        ax.cla()
+
+    @staticmethod
+    def print_means(results):
+        extinctions = [result.pop("extinction_time") for result in results]
+        if all(extinctions):
+            average_extinction_time = np.mean(extinctions)
+        elif any(extinctions):
+            average_extinction_time = "partial survivorship"
+        else:
+            average_extinction_time = "no extinctions"
+        print("average time until extinction: ", average_extinction_time)
+
+        averages = np.mean([list(result.values()) for result in results], axis=0)
+        print(dict(zip(results[0].keys(), averages)))
